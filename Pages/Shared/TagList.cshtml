@@ -1,0 +1,36 @@
+﻿@model MetatagListModel
+
+<h2>List Tags by: @Model.Name</h2>
+
+<ul>
+    <table>
+        <tr>
+            <th>Tag</th>
+            <th>Articles</th>
+            <th>Updated</th>
+        </tr>
+        @foreach (var metatag in (Model.Metatags))
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(metatag.Name, "Tag", "Admin", new { name = metatag.Name })
+
+                </td>
+                <td>
+                    @metatag.Articles.Count
+                </td>
+
+                <td class="nb">
+                    @metatag.Updated.ToString(MvcHelpers.DateFormat)
+                </td>
+
+            </tr>
+        }
+    </table>
+</ul>
+<div class="navigation">
+    @Html.ActionLink("List", "List", "Admin")
+    @Html.ActionLink("ListAll", "ListAll", "Admin")
+    @Html.ActionLink("TagList", "TagList", "Admin")
+    @Html.ActionLink("Create", "CreateArticle", "Admin")
+</div>

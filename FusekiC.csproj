@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;MVC1000</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="homefuseki\**" />
+    <Compile Remove="temp\**" />
+    <Compile Remove="wwwroot\1\**" />
+    <Compile Remove="wwwroot\images\**" />
+    <Content Remove="homefuseki\**" />
+    <Content Remove="temp\**" />
+    <Content Remove="wwwroot\1\**" />
+    <Content Remove="wwwroot\images\**" />
+    <EmbeddedResource Remove="homefuseki\**" />
+    <EmbeddedResource Remove="temp\**" />
+    <EmbeddedResource Remove="wwwroot\1\**" />
+    <EmbeddedResource Remove="wwwroot\images\**" />
+    <None Remove="homefuseki\**" />
+    <None Remove="temp\**" />
+    <None Remove="wwwroot\1\**" />
+    <None Remove="wwwroot\images\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="fuseki - Copy.db" />
+    <None Remove="fuseki.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.18.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
+    <PackageReference Include="Sqlite.Codefirst" Version="1.5.3.29" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\Shared\DisplayTemplates\" />
+  </ItemGroup>
+
+
+
+</Project>

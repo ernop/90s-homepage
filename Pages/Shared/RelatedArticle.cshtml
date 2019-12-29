@@ -1,0 +1,5 @@
+﻿@model RelatedArticle
+
+<div class="relatedarticle">
+    @Html.ActionLink(@Model.Article.Title, "ViewArticle", "Admin", new { title = Model.Article.Title })
+</div>

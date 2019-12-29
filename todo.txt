@@ -1,0 +1,14 @@
+﻿Todo:
+drag & drop images
+autocomplete for tags
+autocomplete to include images
+image thumbnails
+image resizing in page and in image list view
+fix css styles
+wysiwyg editing
+rss of changes
+command line in web UI experiment
+
+1. inspiration
+	https://www.benkuhn.net/squared
+2. online publish

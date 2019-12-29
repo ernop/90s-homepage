@@ -1,0 +1,26 @@
+﻿@model PublicationListModel
+
+<h2>Publications</h2>
+
+<ul>
+    <table>
+        <tr>
+            <th>Publication</th>
+            <th>Articles</th>
+            <th>Date</th>
+        </tr>
+        @foreach (var publication in (Model.Publications))
+        {
+            <tr>
+                <td>
+                    @publication.Id
+                </td>
+                <td>@publication.ArticleCount</td>
+
+                <td>
+                    @publication.PublicationTime
+                </td>
+            </tr>
+        }
+    </table>
+</ul>

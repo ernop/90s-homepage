@@ -1,0 +1,8 @@
+﻿@model LoginModel
+
+    <form action="/account/login" method="POST">
+        @Html.EditorFor(m => m.Username)
+        @Html.PasswordFor(m => m.Password)
+        @Html.DisplayFor(m => m.Error)
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>

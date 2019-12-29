@@ -1,0 +1,20 @@
+﻿<form action="/image/upload/"
+      enctype="multipart/form-data"
+      method="post">
+    <dl>
+        <dt>
+            <label for="UploadFileModel">File</label>
+        </dt>
+        <dd>
+            <input id="image" type="file"
+                   name="image" />
+            <input id="name" type="text" name="filename" />
+        </dd>
+    </dl>
+
+    <input class="btn" type="submit" value="Upload" />
+
+    <div style="margin-top:15px">
+        <output name="result"></output>
+    </div>
+</form>

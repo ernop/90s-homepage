@@ -1,0 +1,4 @@
+﻿@model SearchResultModel
+
+@Html.Partial("List", new ListModel($"Title matches for: {Model.Term}", Model.TitleMatches))
+@Html.Partial("List", new ListModel($"Body matches for: {Model.Term}", Model.BodyMatches))

@@ -1,0 +1,13 @@
+﻿@model ArticleModel
+@{
+    var text = "";
+    if (Model.Published)
+    {
+        text = "Unpublish";
+    }
+    else
+    {
+        text = "Publish";
+    }
+}
+<button class="btn btn-primary publish" articleId="@Model.Id">@text</button>

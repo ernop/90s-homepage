@@ -1,0 +1,27 @@
+﻿@model ArticleModel
+
+<h1>@Model.Title</h1>
+
+@Html.Raw(Model.RenderedBody)
+
+<p>
+    @Html.Partial("Tags", new TagViewModel(Model.Tags, ""))
+</p>
+
+<div class="action">
+    <form action="/article/edit/@Model.Title" method="post">
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+</div>
+@Html.Partial("PublishButton", Model)
+@Html.Partial("DeleteButton", Model)
+
+<ul>
+    @foreach (var ad in Model.RelatedArticles)
+    {
+        <li>
+            @Html.Partial("RelatedArticle", ad)
+        </li>
+    }
+</ul>
+

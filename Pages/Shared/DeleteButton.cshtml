@@ -1,0 +1,13 @@
+﻿@model ArticleModel
+@{ 
+    var text = "";
+    if (Model.Deleted)
+    {
+        text = "Undelete";
+    }
+    else
+    {
+        text = "Delete";
+    }
+}
+<button class="btn btn-primary delete" articleId="@Model.Id">@text</button>
