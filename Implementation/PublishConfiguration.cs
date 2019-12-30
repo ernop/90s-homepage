@@ -7,7 +7,7 @@ namespace FusekiC
     {
         public PublishConfiguration(string tempBase, string cssSource, string jsSource, string imageSource, string publishTarget)
         {
-            foreach (var el in new List<string>() { tempBase, cssSource, jsSource, imageSource, publishTarget })
+            foreach (var el in new List<string>() { tempBase, cssSource, jsSource, imageSource })
             {
                 if (el.EndsWith("/"))
                 {

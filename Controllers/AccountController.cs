@@ -24,7 +24,7 @@ namespace FusekiC.Controllers
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync();
-            return Redirect("/");
+            return Redirect("../../");
         }
 
         [AllowAnonymous]

@@ -30,7 +30,7 @@ namespace FusekiC
         {
             if (!System.IO.Directory.Exists(baseDir))
             {
-                return Redirect("/");
+                return Redirect("../");
             }
             var files = System.IO.Directory.EnumerateFiles(baseDir);
             foreach (var file in files)
@@ -51,7 +51,7 @@ namespace FusekiC
                 }
                 
             }
-            return Redirect("/");
+            return Redirect("..");
         }
 
         private void ProcessRst(string fp)
@@ -166,7 +166,7 @@ namespace FusekiC
                 var tag = db.Tags.Where(el => el.Name == name).FirstOrDefault();
                 if (tag == null)
                 {
-                    return Redirect("/");
+                    return Redirect("../../");
                 }
                 var articleIds = db.Tags.Where(el => el.Name == name).Select(el => el.ArticleId);
                 var articles = db.Articles
@@ -192,7 +192,7 @@ namespace FusekiC
                 var a = db.Add(article);
 
                 db.SaveChanges();
-                return Redirect($"/article/edit/{a.Entity.Title}");
+                return Redirect($"article/edit/{a.Entity.Title}");
             }
         }
 
@@ -264,7 +264,7 @@ namespace FusekiC
                         db.Add(tag);
                     }
                     db.SaveChanges();
-                    return Redirect($"/{model.Title}");
+                    return Redirect($"../{model.Title}");
                 }
             }
             else
@@ -281,7 +281,7 @@ namespace FusekiC
             return View("TagList", m);
         }
 
-        [HttpGet("/list")]
+        [HttpGet("list")]
         public IActionResult List()
         {
             using (var db = new FusekiContext())

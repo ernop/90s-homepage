@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,10 +25,14 @@ namespace FusekiC
                     mt.Name = tag;
                     var articleIds = db.Tags.Where(el => el.Name == tag).Select(el => el.ArticleId);
                     var articles = db.Articles.Where(el => articleIds.Contains(el.Id) && el.Published).ToList(); ;
+                    if (articles.Count == 0)
+                    {
+                        continue;
+                    }
                     mt.Articles = articles;
                     mt.Count = articles.Count;
-                    mt.Created = articles.OrderBy(el => el.Created).First().Created;
-                    mt.Updated = articles.OrderByDescending(el => el.Updated).First().Updated;
+                    mt.Created = articles.OrderBy(el => el.Created).FirstOrDefault()?.Created ?? DateTime.MinValue;
+                    mt.Updated = articles.OrderByDescending(el => el.Updated).FirstOrDefault()?.Updated ?? DateTime.MinValue;
                     metatags.Add(mt);
                 }
             }
