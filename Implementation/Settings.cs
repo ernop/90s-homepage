@@ -18,5 +18,7 @@ namespace FusekiC
         /// google analytics id.
         /// </summary>
         public string GaId { get; set; }
+
+        public string CookieScheme { get; set; }
     }
 }

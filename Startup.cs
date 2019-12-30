@@ -17,7 +17,6 @@ namespace FusekiC
 {
     public class Startup
     {
-        public const string CookieScheme = "FusekiThESchemee32";
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -31,14 +30,15 @@ namespace FusekiC
 
             services.AddSingleton(logger);
             services.AddAuthorization();
-            services.AddAuthentication(CookieScheme) // Sets the default scheme to cookies
-                .AddCookie(CookieScheme, options =>
+            var settings = Configuration.Get<Settings>();
+            services.AddAuthentication(settings.CookieScheme) // Sets the default scheme to cookies
+                .AddCookie(settings.CookieScheme, options =>
                 {
                     options.AccessDeniedPath = "/list";
                     options.LoginPath = "/account/login";
                 });
             var renderer = new Renderer();
-            var settings = Configuration.Get<Settings>();
+            
 
             services.AddSingleton(settings);
             services.AddSingleton(renderer);
