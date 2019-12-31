@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FusekiC
 {
@@ -12,7 +13,7 @@ namespace FusekiC
             var tagnames = article.Tags.Select(el => el.Name);
             using (var db = new FusekiContext())
             {
-                var relatedTags = db.Tags.Where(el => tagnames.Contains(el.Name));
+                var relatedTags = db.Tags.Include(el=>el.Article).Where(el => tagnames.Contains(el.Name));
                 var scores = new Dictionary<int, List<Tag>>();
                 foreach (var tag in relatedTags)
                 {
@@ -20,8 +21,7 @@ namespace FusekiC
                     {
                         continue;
                     }
-                    var relatedArticle = db.Articles.Find(tag.ArticleId);
-                    if (!relatedArticle.Published)
+                    if (!tag.Article.Published)
                     {
                         continue;
                     }
@@ -44,7 +44,7 @@ namespace FusekiC
                     {
                         break;
                     }
-                    var relatedArticle = db.Articles.First(ar => ar.Id == el.Key);
+                    var relatedArticle = db.Articles.Find(el.Key);
                     res.Add(new RelatedArticle(relatedArticle, el.Value));
                 }
 

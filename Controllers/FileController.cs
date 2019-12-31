@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace FusekiC
 {
@@ -28,7 +29,17 @@ namespace FusekiC
             return View("Upload");
         }
 
-       
+       private bool CheckExtension(string ext) {
+            var Valids = new List<string>() { ".png", ".jpg", ".gif" };
+            foreach (var valid in Valids)
+            {
+                if (ext.EndsWith(valid))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         [HttpPost("/image/upload")]
         public IActionResult UploadPost(UploadFileModel file)
@@ -40,6 +51,27 @@ namespace FusekiC
             }
 
             filename = CleanFilename(filename);
+
+
+            if (!CheckExtension(filename))
+            {
+                var extFromImage = Path.GetExtension(file.Image.FileName);
+
+                if (CheckExtension(extFromImage))
+                {
+
+                    filename = filename + extFromImage;
+
+                }
+                else
+                {
+                    throw new Exception("Invalid extension on filename" + filename);
+                }
+            }
+            else
+            {
+                throw new Exception("Invalid extension on filename" + filename);
+            }
 
             var targetPath = $"{PublishConfiguration.ImageSource}/{filename}";
             if (System.IO.File.Exists(targetPath))

@@ -119,7 +119,7 @@ namespace FusekiC
                 foreach (var tagname in tags)
                 {
                     var tag = new Tag();
-                    tag.ArticleId = articleEntity.Id;
+                    tag.Article = articleEntity;
                     tag.Name = tagname;
                     tag.Updated = now;
                     tag.Created = now;
@@ -163,7 +163,8 @@ namespace FusekiC
         {
             using (var db = new FusekiContext())
             {
-                var tag = db.Tags.Where(el => el.Name == name).FirstOrDefault();
+                var tag = db.Tags
+                    .Where(el => el.Name == name).FirstOrDefault();
                 if (tag == null)
                 {
                     return Redirect("../../");
@@ -171,7 +172,7 @@ namespace FusekiC
                 var articleIds = db.Tags.Where(el => el.Name == name).Select(el => el.ArticleId);
                 var articles = db.Articles
                     .Where(el => articleIds.Contains(el.Id))
-                    .Where(el=>el.Published)
+                    .Where(el => el.Published)
                     .Include(el => el.Tags)
                     .ToList();
                 var model = new ListModel($"Tag: {tag.Name}", articles, name);
@@ -260,7 +261,7 @@ namespace FusekiC
 
                     foreach (var good in toadd)
                     {
-                        var tag = CreateTag(article.Id, good);
+                        var tag = CreateTag(article, good);
                         db.Add(tag);
                     }
                     db.SaveChanges();
@@ -368,10 +369,10 @@ namespace FusekiC
             }
         }
 
-        private static Tag CreateTag(int articleId, string name)
+        private static Tag CreateTag(Article article, string name)
         {
             var tag = new Tag();
-            tag.ArticleId = articleId;
+            tag.Article = article;
             tag.Name = name.Trim().ToLower();
             var now = DateTime.Now;
             tag.Created = now;

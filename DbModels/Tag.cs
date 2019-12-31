@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FusekiC
@@ -6,6 +7,7 @@ namespace FusekiC
     public class Tag
     {
         public int Id { get; set; }
+        public Article Article { get; set; }
         public int ArticleId { get; set; }
         public string Name { get; set; }
 
