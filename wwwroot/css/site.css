@@ -90,14 +90,15 @@ div {
     display: inline-block;
 }
 
-.tag {
+.tag a {
     border: 1px dashed lightgrey;
     border-radius: 3px;
     margin: 2px;
     padding: 5px;
+    display: inline-block;
 }
 
-    .tag:hover {
+    .tag a:hover {
         background-color: lightblue;
     }
 
@@ -116,7 +117,7 @@ div.navigation {
     font-size: 1.4em;
 }
 
-.highlight {
+.highlight a {
     border: 1px dashed red !important;
 }
 
@@ -157,5 +158,5 @@ h1, h2, h3, h4, h5, h6 {
 
 .articleLinks{
     margin:auto;
-    width:40%;
+    width:85%;
 }

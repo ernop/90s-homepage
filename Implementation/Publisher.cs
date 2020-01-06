@@ -59,13 +59,13 @@ namespace FusekiC
         {
             if (inAdmin)
             {
-                return $"<a href=\"/{article.Title}\">{article.Title}</a>";
+                return $"<a class=article href=\"/{article.Title}\">{article.Title}</a>";
             }
             else
             {
                 var stem = inTagDir ? "../" : "";
                 var fn = MakeFilename(article.Title, true);
-                return $"<a href=\"{stem}{fn}\">{article.Title}</a>";
+                return $"<a class=article href=\"{stem}{fn}\">{article.Title}</a>";
             }
 
 
@@ -175,7 +175,9 @@ namespace FusekiC
                 var articles = db.Articles
                     .Include(ee => ee.Tags)
                     .Where(ee => ee.Published)
-                    .Where(el => articleIds.Contains(el.Id));
+                    .Where(el => articleIds.Contains(el.Id))
+                    .OrderBy(el => el.Title);
+                
                 foreach (var article in articles)
                 {
                     var row = MakeArticleRowForList(article, tag);
@@ -211,7 +213,7 @@ namespace FusekiC
             var taglink = $"{MakeFilename(tag.Name)}";
             var tagFolder = inTagDir ? "" : "tags/";
             var klass = tag.Name == highlightTag ? "highlight " : "";
-            var line = $"<div class=\"{klass}tag\"><a href=\"{tagFolder}{taglink}\">{tag.Name}</a></div>";
+            var line = $"<div class=\"{klass}tag\"><a class=taglink href=\"{tagFolder}{taglink}\">{tag.Name}</a></div>";
             return line;
         }
 
@@ -233,7 +235,8 @@ namespace FusekiC
         private static string ConvertRelatedArticleToLink(RelatedArticle el)
         {
             var articleLink = LinkToArticle(el.Article, false);
-            var tagList = el.RelatedTags.OrderBy(el => el.Name).Select(t => MakeTagLink(t, "", false));
+            var tagList = el.Article.Tags.OrderBy(el => el.Name).Select(t => MakeTagLink(t, el.RelatedTags.Select(el=>el.Name).Contains(t.Name) ? t.Name : "", false));
+
             return $"<div class='relatedarticle'>{articleLink} <div class=\"right\">{string.Join("", tagList)}</div></div>";
         }
 

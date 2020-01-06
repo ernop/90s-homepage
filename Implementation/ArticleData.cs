@@ -8,12 +8,66 @@ namespace FusekiC
 {
     public class ArticleData
     {
+        /// <summary>
+        /// Weigh them by inverse popularity of related tag, not by count strictly.
+        /// </summary>
         public List<RelatedArticle> GetRelatedArticles(Article article)
+        {
+            var tagnames = article.Tags.Select(el => el.Name);
+            var counts = new Dictionary<string, int>();
+            using (var db = new FusekiContext())
+            {
+                foreach (var tag in tagnames)
+                {
+                    var count = db.Tags.Where(el => el.Name == tag).Count();
+                    counts[tag] = count;
+                }
+                //calculate the related tags, and then the score of every other article in the system.
+
+                var scoredArticles = new Dictionary<Article, double>();
+
+                foreach (var otherArticle in db.Articles
+                    .Include(el=>el.Tags)
+                    .Where(el => el.Published))
+                {
+                    if (otherArticle.Id == article.Id)
+                    {
+                        continue;
+                    }
+                    var uniqs = otherArticle.Tags.Select(el => el.Name).ToHashSet();
+                    uniqs.IntersectWith(tagnames);
+                    var score = uniqs.Select(el => 1.0 / counts[el]).Sum();
+                    scoredArticles[otherArticle] = score;
+                }
+
+                var orderedRelated = scoredArticles.ToList().OrderByDescending(el => el.Value);
+                var res = new List<RelatedArticle>();
+                foreach (var el in orderedRelated)
+                {
+                    if (el.Value == 0)
+                    {
+                        break;
+                    }
+                    if (res.Count > 10)
+                    {
+                        break;
+                    }
+                    var relatedArticle = db.Articles.Find(el.Key.Id);
+                    //doh, calculating these again.
+                    var relatedTags = relatedArticle.Tags.Where(el => tagnames.Contains(el.Name)).ToList();
+                    res.Add(new RelatedArticle(relatedArticle, relatedTags));
+                }
+
+                return res;
+            }
+        }
+
+        public List<RelatedArticle> GetRelatedArticlesNaive(Article article)
         {
             var tagnames = article.Tags.Select(el => el.Name);
             using (var db = new FusekiContext())
             {
-                var relatedTags = db.Tags.Include(el=>el.Article).Where(el => tagnames.Contains(el.Name));
+                var relatedTags = db.Tags.Include(el => el.Article).Where(el => tagnames.Contains(el.Name));
                 var scores = new Dictionary<int, List<Tag>>();
                 foreach (var tag in relatedTags)
                 {

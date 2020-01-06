@@ -68,10 +68,6 @@ namespace FusekiC
                     throw new Exception("Invalid extension on filename" + filename);
                 }
             }
-            else
-            {
-                throw new Exception("Invalid extension on filename" + filename);
-            }
 
             var targetPath = $"{PublishConfiguration.ImageSource}/{filename}";
             if (System.IO.File.Exists(targetPath))

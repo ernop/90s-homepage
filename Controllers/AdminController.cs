@@ -142,12 +142,14 @@ namespace FusekiC
             {
                 var art = db.Articles
                     .Include(el=>el.Tags)
-                    .Where(el => el.Title.ToLower().Contains(term));
+                    .Where(el => el.Title.ToLower().Contains(term))
+                    .OrderBy(el=>el.Title);
                 model.TitleMatches = art.ToList();
                 
                 var body = db.Articles
                     .Include(el => el.Tags)
-                    .Where(el => el.Body.ToLower().Contains(term));
+                    .Where(el => el.Body.ToLower().Contains(term))
+                    .OrderBy(el => el.Title);
                 model.BodyMatches = body.ToList();
 
                 //var tags = db.Tags.Where(el => el.Name.ToLower().Contains(term));
@@ -174,6 +176,7 @@ namespace FusekiC
                     .Where(el => articleIds.Contains(el.Id))
                     .Where(el => el.Published)
                     .Include(el => el.Tags)
+                    .OrderBy(el => el.Title)
                     .ToList();
                 var model = new ListModel($"Tag: {tag.Name}", articles, name);
                 ViewData["Title"] = $"Search: {name}";
