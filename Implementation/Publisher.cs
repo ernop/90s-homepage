@@ -205,7 +205,7 @@ namespace FusekiC
                 var line = MakeTagLink(tag, highlightTag, inTagDir);
                 sb.Append(line);
             }
-            return sb.ToString();
+            return "<div class=taglist>"+sb.ToString()+"</div>";
         }
 
         private static string MakeTagLink(Tag tag, string highlightTag, bool inTagDir)
@@ -222,7 +222,7 @@ namespace FusekiC
             var taglist = MakeTagList(article, "", false);
             var otherArticleLinks = MakeArticleLinks(article);
 
-            return taglist + "<hr /><h2>Related:</h2>" + otherArticleLinks;
+            return taglist + "<h2>Related:</h2>" + otherArticleLinks;
         }
 
         private string MakeArticleLinks(Article article)
