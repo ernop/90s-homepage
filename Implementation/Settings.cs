@@ -20,5 +20,8 @@ namespace FusekiC
         public string GaId { get; set; }
 
         public string CookieScheme { get; set; }
+        public string LiveUrlTemplate { get; set; }
+        public string EditUrlTemplate { get; set; }
+        public string Version { get; set; }
     }
 }

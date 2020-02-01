@@ -11,7 +11,7 @@ namespace FusekiC
         public ListModel(string name, List<Article> articles, string highlightTag = "")
         {
             Name = name;
-            Articles = articles.Select(el=>new ArticleModel(el, "")).ToList();
+            Articles = articles.Select(el=>new ArticleModel(el, "", "", "")).ToList();
             HighlightTag = highlightTag;
         }
         public string Name { get; set; }

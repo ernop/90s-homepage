@@ -31,6 +31,7 @@ namespace FusekiC
                     webBuilder
                     .UseStartup<Startup>();
                 });
+                Console.WriteLine("Development.");
             }
 
 
@@ -47,7 +48,8 @@ namespace FusekiC
 
                 
             }
-            builder.Build().Run();
+            var build = builder.Build();
+            build.Run();
         }
     }
 }

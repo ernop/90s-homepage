@@ -2,6 +2,18 @@
 
 <h1>@Model.Title</h1>
 
+<div class="pageData" kind="viewArticle" title="@Model.Title"></div>
+
+<div class="action">
+    <form action="/article/edit/@Model.Title" method="post">
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+    <h3>
+        <a href="@Model.LiveUrl">Live</a>
+        <br /><a href="@Model.EditUrl">LiveEdit</a>
+    </h3>
+</div>
+
 @Html.Raw(Model.RenderedBody)
 
 <p>

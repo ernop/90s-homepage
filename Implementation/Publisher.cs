@@ -59,13 +59,13 @@ namespace FusekiC
         {
             if (inAdmin)
             {
-                return $"<a class=article href=\"/{article.Title}\">{article.Title}</a>";
+                return $"<a class=articlelink href=\"/{article.Title}\">{article.Title}</a>";
             }
             else
             {
                 var stem = inTagDir ? "../" : "";
                 var fn = MakeFilename(article.Title, true);
-                return $"<a class=article href=\"{stem}{fn}\">{article.Title}</a>";
+                return $"<a class=articlelink href=\"{stem}{fn}\">{article.Title}</a>";
             }
 
 
@@ -146,7 +146,7 @@ namespace FusekiC
             var filename = MakeFilename(article.Title);
             var path = MakePath(pc, filename);
             var parts = new List<string>() { header, title, body, footer };
-            var combined = WrapInner(parts, false, title: article.Title);
+            var combined = WrapInner(parts, false, title: article.Title, mainDivClass:"article");
 
             System.IO.File.WriteAllText(path, combined);
         }
@@ -160,14 +160,14 @@ namespace FusekiC
             var filename = $"tags/{MakeFilename(tag)}";
             var path = MakePath(pc, filename);
             var parts = new List<string>() { header, title, body };
-            var combined = WrapInner(parts, true, $"Tag: {tag}");
+            var combined = WrapInner(parts, true, $"Tag: {tag}", mainDivClass: "tag");
             System.IO.File.WriteAllText(path, combined);
         }
 
         private string MakeTagTable(string tag)
         {
             var sb = new StringBuilder();
-            var header = "<table><tr><th>Article<th>Body<th>Tags<th>Updated";
+            var header = "<table><thead><tr><th>Article<th>Body<th>Tags<th>Updated</thead><tbody>";
             sb.Append(header);
             using (var db = new FusekiContext())
             {
@@ -184,7 +184,7 @@ namespace FusekiC
                     sb.Append(row);
                 }
             }
-            var end = "</table>";
+            var end = "</tbody></table>";
             sb.Append(end);
             return sb.ToString();
         }
@@ -222,7 +222,7 @@ namespace FusekiC
             var taglist = MakeTagList(article, "", false);
             var otherArticleLinks = MakeArticleLinks(article);
 
-            return taglist + "<h2>Related:</h2>" + otherArticleLinks;
+            return taglist + "<h2>Related Articles:</h2>" + otherArticleLinks;
         }
 
         private string MakeArticleLinks(Article article)
@@ -245,7 +245,7 @@ namespace FusekiC
             return pc.TempBase + "/" + fn;
         }
 
-        private static string MakeFilename(string name, bool includeSuffix = true)
+        public static string MakeFilename(string name, bool includeSuffix = true)
         {
             var res = "";
             foreach (var c in name)
@@ -263,7 +263,7 @@ namespace FusekiC
 
         }
 
-        private string WrapInner(List<string> parts, bool inTagDir, string title)
+        private string WrapInner(List<string> parts, bool inTagDir, string title, string mainDivClass)
         {
             var stem = inTagDir ? "../" : "";
             var sb = new StringBuilder();
@@ -271,7 +271,10 @@ namespace FusekiC
             var st = "<meta charset=\"utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />" +
                 $"<title>{title}</title><link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" />" +
                 $"\n{font}" +
-            $"<link rel=\"stylesheet\" href=\"{stem}css/site.css\" /><body><div class=container>";
+                $"\n<script src='{stem}js/jquery.min.js'></script>\n" +
+                $"\n<script src='{stem}js/jquery.tablesorter.js'></script>\n"+
+                $"\n<script src='{stem}js/site-public.js'></script>\n" +
+            $"<link rel=\"stylesheet\" href=\"{stem}css/site.css?{Settings.Version}\" /><body><div class=\"container {mainDivClass}\">";
             var ga= $"<script type='text/javascript'>var _gaq = _gaq || [ ];_gaq.push([ '_setAccount', '{Settings.GaId}' ]);_gaq.push([ '_trackPageview' ]);" +
          "(function() {" +
            "var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; " +

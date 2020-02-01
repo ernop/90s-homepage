@@ -10,10 +10,12 @@ namespace FusekiC
     {
         public ArticleModel() { }
 
-        public ArticleModel(Article ar, string renderedBody, List<RelatedArticle> related = null)
+        public ArticleModel(Article ar, string liveUrl, string editUrl, string renderedBody, List<RelatedArticle> related = null)
         {
             Id = ar.Id;
             Title = ar.Title;
+            LiveUrl = liveUrl;
+            EditUrl = editUrl;
             Body = ar.Body;
             Tags = string.Join(",", ar.Tags.Select(ee => ee.Name).OrderBy(el => el).ToList());
             Published = ar.Published;
@@ -25,6 +27,9 @@ namespace FusekiC
         }
 
         public int Id { get; set; }
+
+        public string LiveUrl { get; set; }
+        public string EditUrl { get; set; }
 
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Length from 1 to 100")]
         public string Title { get; set; }

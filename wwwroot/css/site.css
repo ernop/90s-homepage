@@ -75,6 +75,7 @@ body {
 
 table td {
     padding: 4px;
+    vertical-align: top;
 }
 
 table th {
@@ -120,6 +121,13 @@ body {
     margin-top: 15px;
     width: 100% !important;
     max-width: inherit !important;
+}
+
+.container.article{
+    width:60% !important;
+}
+.container.tag{
+    
 }
 
 div.navigation {

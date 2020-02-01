@@ -13,9 +13,11 @@ namespace FusekiC
     {
         private ArticleData ArticleData { get; set; }
         public Renderer Renderer { get; set; }
-        public AdminController(Renderer renderer)
+        public Settings Settings { get; set; }
+        public AdminController(Renderer renderer, Settings settings)
         {
             ArticleData = new ArticleData();
+            Settings = settings;
             Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
         }
 
@@ -54,16 +56,16 @@ namespace FusekiC
             return Redirect("..");
         }
 
-        private void ProcessRst(string fp)
+        private static void ProcessRst(string fp)
         {
             Process(fp, false);
         }
-        private void ProcessRsx(string fp)
+        private static void ProcessRsx(string fp)
         {
             Process(fp, false);
         }
 
-        public void Process(string fp, bool published)
+        public static void Process(string fp, bool published)
         { 
             var lines = System.IO.File.ReadLines(fp);
             if (!lines.Any())
@@ -159,6 +161,29 @@ namespace FusekiC
             return View("SearchResult", model);
         }
 
+        [HttpGet("/randompublished")]
+        public IActionResult RandomPublished()
+        {
+            using (var db = new FusekiContext())
+            {
+                var arti = db.Articles.Where(el => el.Published == true && el.Deleted == false);
+                var n = new System.Random().Next(arti.Count());
+                var article = arti.Skip(n).First();
+                return RedirectToAction("ViewArticle", "Admin", new { title = article.Title });
+            }
+        }
+
+        [HttpGet("/randomunpublished")]
+        public IActionResult RandomUnpublished()
+        {
+            using (var db = new FusekiContext())
+            {
+                var arti = db.Articles.Where(el => el.Published == false && el.Deleted == false);
+                var n = new System.Random().Next(arti.Count());
+                var article = arti.Skip(n).First();
+                return RedirectToAction("ViewArticle", "Admin", new { title = article.Title });
+            }
+        }
 
         [HttpGet("/tag/{name}")]
         public IActionResult Tag(string name)
@@ -212,7 +237,9 @@ namespace FusekiC
 
                 var normalized = Renderer.Normalize(article.Body);
                 article.Body = normalized;
-                var model = new ArticleModel(article, Renderer.ToHtml(normalized));
+                var liveUrl = string.Format(Settings.LiveUrlTemplate, article.Title, true);
+                var editUrl = string.Format(Settings.EditUrlTemplate, article.Title, false);
+                var model = new ArticleModel(article, liveUrl, editUrl, Renderer.ToHtml(normalized));
                 ViewData["Title"] = $"Editing {article.Title}";
                 return View("EditArticle", model);
             }
@@ -366,7 +393,9 @@ namespace FusekiC
 
                 var related = ArticleData.GetRelatedArticles(article);
 
-                var model = new ArticleModel(article, Renderer.ToHtml(article.Body, true), related);
+                var liveUrl = string.Format(Settings.LiveUrlTemplate, Publisher.MakeFilename(article.Title, true));
+                var editUrl = string.Format(Settings.EditUrlTemplate, article.Title, false);
+                var model = new ArticleModel(article, liveUrl, editUrl, Renderer.ToHtml(article.Body, true), related);
                 ViewData["Title"] = $"{article.Title}";
                 return View("Article", model);
             }

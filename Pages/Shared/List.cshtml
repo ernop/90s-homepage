@@ -3,37 +3,40 @@
 <h2>@Model.Name</h2>
 
     <table>
-        <tr>
-            <th>Article</th>
+        <thead>
+            <tr>
+                <th>Article</th>
                 <th>Edit</th>
-            
-            <th>Len</th>
-            <th>Tags</th>
+
+                <th>Len</th>
+                <th>Tags</th>
                 <th>Published</th>
 
                 <th>Deleted</th>
-            
-            <th>Updated</th>
-        </tr>
-        @foreach (var article in (Model.Articles))
-        {
-            <tr>
-                <td>
+
+                <th>Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in (Model.Articles))
+            {
+                <tr>
+                    <td>
                         @Html.ActionLink(article.Title, "ViewArticle", "Admin", new { title = article.Title })
-                    
-                </td>
-                
+
+                    </td>
+
                     <td>
                         <form action="/article/edit/@article.Title" method="post">
                             <button type="submit" class="btn btn-primary">Edit</button>
                         </form>
                     </td>
-                
-                <td>@article.Body?.Length</td>
-                <td>
-                    @Html.Partial("Tags", new TagViewModel(article.Tags, Model.HighlightTag))
-                </td>
-                
+
+                    <td>@article.Body?.Length</td>
+                    <td>
+                        @Html.Partial("Tags", new TagViewModel(article.Tags, Model.HighlightTag))
+                    </td>
+
 
                     <td>
                         @Html.Partial("PublishButton", article)
@@ -41,11 +44,12 @@
                     <td>
                         @Html.Partial("DeleteButton", article)
                     </td>
-                
+
                     <td class="nb">
                         @article.Updated.ToString(MvcHelpers.DateFormat)
                     </td>
 
-            </tr>
-        }
+                </tr>
+            }
+        </tbody>
     </table>

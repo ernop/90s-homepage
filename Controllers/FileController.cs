@@ -29,7 +29,7 @@ namespace FusekiC
             return View("Upload");
         }
 
-       private bool CheckExtension(string ext) {
+       private static bool ValidateImageExtension(string ext) {
             var Valids = new List<string>() { ".png", ".jpg", ".gif" };
             foreach (var valid in Valids)
             {
@@ -53,11 +53,11 @@ namespace FusekiC
             filename = CleanFilename(filename);
 
 
-            if (!CheckExtension(filename))
+            if (!ValidateImageExtension(filename))
             {
                 var extFromImage = Path.GetExtension(file.Image.FileName);
 
-                if (CheckExtension(extFromImage))
+                if (ValidateImageExtension(extFromImage))
                 {
 
                     filename = filename + extFromImage;
@@ -105,7 +105,7 @@ namespace FusekiC
             return RedirectToAction("ViewImages", new { term });
         }
 
-        private string CleanFilename(string n)
+        private static string CleanFilename(string n)
         {
             var res = "";
             var dotcount = 0;
