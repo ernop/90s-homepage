@@ -25,6 +25,9 @@ namespace FusekiC.Migrations
                     b.Property<string>("Body")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("BookId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 

@@ -27,7 +27,6 @@ namespace FusekiC
         }
 
         public int Id { get; set; }
-
         public string LiveUrl { get; set; }
         public string EditUrl { get; set; }
 

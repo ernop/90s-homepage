@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace FusekiC
 {
@@ -20,7 +21,21 @@ namespace FusekiC
             JsSource = jsSource;
             ImageSource = imageSource;
             PublishTarget = publishTarget;
+
+            //validate all of these.
+            var root = System.IO.Directory.GetCurrentDirectory();
+            foreach (var dir in new List<string>() { tempBase, cssSource, jsSource, imageSource })
+            {
+                var target = System.IO.Path.Combine(root, dir);
+                if (!System.IO.Directory.Exists(target))
+                {
+                    Console.WriteLine($"Target missing: {target}");
+                    throw new Exception($"Missing directory {target}");
+                }
+                Console.WriteLine($"Found dir:{target}");
+            }
         }
+
         public string TempBase { get; set; }
         public string CssSource { get; set; }
         public string JsSource { get; set; }

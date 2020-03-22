@@ -1,17 +1,19 @@
 ﻿@model ArticleModel
 
-<form method="post"
-      action="/article/update">
-    <button type="submit" class="btn btn-primary">Save</button>
-    <hr />
-    @Html.EditorFor(m => m.Title, new { htmlAttributes = new { @class = "title-editor" } })
-    <hr />
+    <form method="post"
+          action="/article/update">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <hr />
+        @Html.EditorFor(m => m.Title, new { htmlAttributes = new { @class = "title-editor" } })
+        <hr />
 
-    @Html.TextAreaFor(m => m.Body, 20, 100, new { })
-    <hr />
-    @Html.EditorFor(m => m.Tags, new { htmlAttributes = new { @class = "tag-editor" } })
-    <input type="hidden" name="id" value="@Model.Id" />
+        <hr />
 
-    <hr />
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+        @Html.TextAreaFor(m => m.Body, 20, 100, new { })
+        <hr />
+        @Html.EditorFor(m => m.Tags, new { htmlAttributes = new { @class = "tag-editor" } })
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <hr />
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
