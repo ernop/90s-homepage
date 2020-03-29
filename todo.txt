@@ -1,7 +1,19 @@
-﻿Todo:
-drag & drop images
-autocomplete for tags
-autocomplete to include images
+﻿1. N-partitioning
+
+ideal output:
+pages for N=2-10
+such that articles (tags) in each partition are minimally distant to each other.
+
+Url 
+
+
+
+Todo:
+* fix local page rendering to use the official method rather than a custom one
+* drag & drop images
+*  autocomplete for tags
+* autocomplete to include images
+popup of "recently uploaded images/related images by megafilter" which you can click to insert/drop into the doc.
 image thumbnails
 image resizing in page and in image list view
 fix css styles
@@ -11,4 +23,5 @@ command line in web UI experiment
 
 1. inspiration
 	https://www.benkuhn.net/squared
+	find other inspirations.  dkuhne's notebooks.
 2. online publish

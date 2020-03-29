@@ -55,17 +55,17 @@ namespace FusekiC
             return pubres;
         }
 
-        public static string LinkToArticle(Article article, bool inTagDir, bool inAdmin = false)
+        public static string LinkToArticle(Article article, bool inTagDir, bool inAdmin = false, double distance = 0)
         {
             if (inAdmin)
             {
-                return $"<a class=articlelink href=\"/{article.Title}\">{article.Title}</a>";
+                return $"<a class=articlelink href=\"/{article.Title}\">{article.Title} ({distance})</a>";
             }
             else
             {
                 var stem = inTagDir ? "../" : "";
                 var fn = MakeFilename(article.Title, true);
-                return $"<a class=articlelink href=\"{stem}{fn}\">{article.Title}</a>";
+                return $"<a class=articlelink href=\"{stem}{fn}\">{article.Title} ({distance})</a>";
             }
 
 

@@ -30,7 +30,7 @@ namespace FusekiC
         {
             using (var db = new FusekiContext())
             {
-                var pubs = db.Publications.OrderByDescending(el=>el.Id).ToList();
+                var pubs = db.Publications.OrderByDescending(el => el.Id).ToList();
                 var model = new PublicationListModel(pubs);
                 ViewData["Title"] = $"Publications";
                 return View("PublicationList", model);
@@ -55,7 +55,25 @@ namespace FusekiC
             model.Publication = publication;
             ViewData["Title"] = $"PublicationResult";
             return View("PublicationResult", model);
+        }
 
+        [HttpPost("/partition")]
+        public IActionResult Partition()
+        {
+            //var partitioner = new Partitioner<Article>((a, b) => Comparators.GetLengthDistance(a, b), (a, b) => Comparators.ArticleKeyLookup(a, b));
+            var partitioner = new Partitioner<Article>((a, b) => Comparators.GetTagCommonality(a, b), (a, b) => Comparators.ArticleKeyLookup(a, b));
+            
+            using (var db = new FusekiContext())
+            {
+                var articles = db.Articles.Where(el => el.Published == true)
+                    .Include(el => el.Tags).ToList();
+                var r = new Random();
+                articles = articles.OrderBy(el => r.NextDouble()).ToList();
+                var partitiondata = partitioner.GetPartitions(25, articles);
+                var model = new ArticlePartitionModel(partitiondata);
+                return View("ArticlePartitions", model);
+            }
+            
         }
     }
 }

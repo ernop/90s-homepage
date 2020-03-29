@@ -1,0 +1,49 @@
+﻿@model ArticlePartitionModel
+
+<h2>Article Partition</h2>
+
+
+<table>
+    @foreach (var k in Model.Data.Keys)
+    {
+
+        <tr>
+            <td>
+                @k
+            </td>
+            <td>
+                @Model.Data[k]
+            </td>
+        </tr>
+
+    }
+</table>
+
+@foreach (var set in Model.Partitions)
+{
+    <table>
+        <tr>
+            <td>
+                <h3>Partition @set.Number</h3>
+                Avg Distance: @set.AverageDistance()
+            </td>
+        </tr>
+        @foreach (var article in set.Items.OrderBy(el=>el.Title))
+        {
+            <tr>
+                <td>@article.Title</td>
+                @foreach (var tag in Model.TagLists[set])
+                {
+                    @if (article.Tags.Select(el => el.Name).Contains(tag))
+                    {
+                        <td>@tag</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        }
+        </table>
+    }

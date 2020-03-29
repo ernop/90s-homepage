@@ -55,6 +55,7 @@ namespace FusekiC
                     var relatedArticle = db.Articles.Find(el.Key.Id);
                     //doh, calculating these again.
                     var relatedTags = relatedArticle.Tags.Where(el => tagnames.Contains(el.Name)).ToList();
+
                     res.Add(new RelatedArticle(relatedArticle, relatedTags));
                 }
 
@@ -62,6 +63,9 @@ namespace FusekiC
             }
         }
 
+        /// <summary>
+        /// TODO: what's the difference?
+        /// </summary>
         public List<RelatedArticle> GetRelatedArticlesNaive(Article article)
         {
             var tagnames = article.Tags.Select(el => el.Name);
@@ -99,6 +103,7 @@ namespace FusekiC
                         break;
                     }
                     var relatedArticle = db.Articles.Find(el.Key);
+
                     res.Add(new RelatedArticle(relatedArticle, el.Value));
                 }
 
