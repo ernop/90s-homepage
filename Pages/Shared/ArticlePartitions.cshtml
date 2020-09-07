@@ -20,10 +20,10 @@
 </table>
 
 @foreach (var set in Model.Partitions)
-{
+{   <br />
     <table>
         <tr>
-            <td>
+            <td colspan="10">
                 <h3>Partition @set.Number</h3>
                 Avg Distance: @set.AverageDistance()
             </td>
@@ -31,16 +31,16 @@
         @foreach (var article in set.Items.OrderBy(el=>el.Title))
         {
             <tr>
-                <td>@article.Title</td>
+                <td style="width:200px !important;" class="nb">@article.Title</td>
                 @foreach (var tag in Model.TagLists[set])
                 {
                     @if (article.Tags.Select(el => el.Name).Contains(tag))
                     {
-                        <td>@tag</td>
+                        <td class="nb" style="border:1px dashed black;">@tag</td>
                     }
                     else
                     {
-                        <td></td>
+                        <td style="border:1px dashed black;"></td>
                     }
                 }
             </tr>

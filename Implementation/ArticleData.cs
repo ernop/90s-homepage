@@ -52,11 +52,14 @@ namespace FusekiC
                     {
                         break;
                     }
-                    var relatedArticle = db.Articles.Find(el.Key.Id);
-                    //doh, calculating these again.
-                    var relatedTags = relatedArticle.Tags.Where(el => tagnames.Contains(el.Name)).ToList();
+                    var relatedArticle = db.Articles
+                        .Include(el => el.Tags)
+                        .FirstOrDefault(ra => ra.Id == el.Key.Id);
 
-                    res.Add(new RelatedArticle(relatedArticle, relatedTags));
+                    //doh, calculating these again.
+                    //var relatedTags = relatedArticle.Tags.Where(el => tagnames.Contains(el.Name)).ToList();
+
+                    res.Add(new RelatedArticle(relatedArticle, relatedArticle.Tags));
                 }
 
                 return res;
@@ -102,7 +105,9 @@ namespace FusekiC
                     {
                         break;
                     }
-                    var relatedArticle = db.Articles.Find(el.Key);
+                    //var relatedArticle = db.Articles.Find(el.Key);
+
+                    var relatedArticle = db.Articles.FirstOrDefault(ra => ra.Id == el.Key);
 
                     res.Add(new RelatedArticle(relatedArticle, el.Value));
                 }

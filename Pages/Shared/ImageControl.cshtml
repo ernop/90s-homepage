@@ -1,0 +1,12 @@
+﻿@model Image
+<td>
+    <form method="post" action="/image/delete">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input class="btn" type="submit" value="Delete" />
+    </form>
+    <form method="post" action="/image/settags">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="text" name="tagLine" value="@Model.GetTagString()" />
+        <input class="btn" type="submit" value="Set Tags" />
+    </form>
+</td>

@@ -101,8 +101,9 @@ namespace FusekiC
                 {
                     tagline = "tags:";
                 }
-                var tags = tagline.Split("tags:")[1].Trim().Split(",").Select(el => el.Trim()).ToList();
-                
+
+                var tags = Helpers.TagLine2Tags(tagline.Split("tags:")[1]);
+
                 lines = lines.Skip(4);
                 lines = lines.Take(lines.ToList().Count - 1);
 
@@ -185,7 +186,7 @@ namespace FusekiC
             }
         }
 
-        [HttpGet("/tag/{name}")]
+        [HttpGet("/tags/{name}")]
         public IActionResult Tag(string name)
         {
             using (var db = new FusekiContext())
@@ -237,7 +238,7 @@ namespace FusekiC
 
                 var normalized = Renderer.Normalize(article.Body);
                 article.Body = normalized;
-                var liveUrl = string.Format(Settings.LiveUrlTemplate, article.Title, true);
+                var liveUrl = string.Format(Settings.LiveUrlTemplate, article.MakeFilename(false), true);
                 var editUrl = string.Format(Settings.EditUrlTemplate, article.Title, false);
                 var model = new ArticleModel(article, liveUrl, editUrl, Renderer.ToHtml(normalized));
                 ViewData["Title"] = $"Editing {article.Title}";
@@ -393,9 +394,10 @@ namespace FusekiC
 
                 var related = ArticleData.GetRelatedArticles(article);
 
-                var liveUrl = string.Format(Settings.LiveUrlTemplate, Publisher.MakeFilename(article.Title, true));
+                var liveUrl = string.Format(Settings.LiveUrlTemplate, article.MakeFilename(true));
                 var editUrl = string.Format(Settings.EditUrlTemplate, article.Title, false);
-                var model = new ArticleModel(article, liveUrl, editUrl, Renderer.ToHtml(article.Body, true), related);
+                var articleString = Renderer.GenerateArticleString(Settings, article, true);
+                var model = new ArticleModel(article, liveUrl, editUrl, articleString, related);
                 ViewData["Title"] = $"{article.Title}";
                 return View("Article", model);
             }

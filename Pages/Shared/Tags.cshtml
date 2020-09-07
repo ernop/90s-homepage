@@ -1,6 +1,6 @@
 ﻿@model TagViewModel
 <div class="taglist">
-    @foreach (var tag in Model.Tags.OrderBy(el=>el))
+    @foreach (var tag in Model.Tags.OrderBy(el => el))
     {
         var klass = tag == Model.HighlightTag ? "highlight" : "";
         <div class="tag @klass">@Html.ActionLink(tag, "Tag", "Admin", new { name = tag })</div>

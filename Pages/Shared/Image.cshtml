@@ -1,9 +1,17 @@
-﻿@model ImageModel
-<tr class="image">
+﻿@model Image
+
+    <td>
+        @Model.Id
+    </td>
     <td>
         @Model.Filename
     </td>
     <td>
-        <img src="../images/@Model.Filename" />
+        @foreach (var tag in Model.ImageTags)
+        {
+            <div class="tagname">@tag.Name, </div>
+        }
     </td>
-</tr>
+    <td>
+        <img class="image-display" src="../images/@Model.Filename" />
+    </td>

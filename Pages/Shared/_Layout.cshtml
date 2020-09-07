@@ -39,16 +39,13 @@
                 @Html.ActionLink("TagList", "TagList", "Admin")
                 @Html.ActionLink("Create", "CreateArticle", "Admin")
                 <br />
-                @Html.ActionLink("Upload Image", "UploadGet", "File")
-                @Html.ActionLink("List Images", "ViewImages", "File")
+                @Html.ActionLink("Upload Image", "UploadGet", "Image")
+                @Html.ActionLink("List Images", "ViewImages", "Image")
                 <br />@Html.ActionLink("Publications", "Index", "Publication")
                 @Html.ActionLink("RP", "RandomPublished", "Admin")
                 @Html.ActionLink("RU", "RandomUnpublished", "Admin")
                 <form action="/publish" method="post">
                     <button type="submit" class="btn btn-primary">Publish All</button>
-                </form>
-                <form action="/partition" method="post">
-                    <button type="submit" class="btn btn-primary">Partition</button>
                 </form>
             </div>
             @RenderBody()

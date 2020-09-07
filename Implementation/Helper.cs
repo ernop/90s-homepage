@@ -10,6 +10,7 @@ namespace FusekiC
     {
         public static Regex TitleRegex = new Regex(@"([\w ]+)");
         public static Regex InternalLinkRegex = new Regex(@"\[([\w ]+)\]");
+        public static Regex AlphaNumeric = new Regex("^[a-zA-Z0-9]*$");
         public static MetatagListModel GetMetatagListModel()
         {
             var metatags = new List<Metatag>();
@@ -72,6 +73,11 @@ namespace FusekiC
                     DirectoryCopy(subdir.FullName, temppath, copySubDirs);
                 }
             }
+        }
+
+        public static List<string> TagLine2Tags(string tagLine)
+        {
+            return tagLine.ToLower().Trim().Split(",").Select(el => el.Trim()).Distinct().ToList();
         }
     }
 }

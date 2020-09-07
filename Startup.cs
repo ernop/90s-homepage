@@ -37,8 +37,7 @@ namespace FusekiC
                     options.AccessDeniedPath = "/list";
                     options.LoginPath = "/account/login";
                 });
-            var renderer = new Renderer();
-            
+            var renderer = new Renderer();            
 
             services.AddSingleton(settings);
             services.AddSingleton(renderer);

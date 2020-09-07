@@ -1,10 +1,19 @@
 ﻿@model ViewImagesModel
 
-    <h2>@Model.Term</h2>
+<h2>@Model.Term</h2>
 
-    <table class="images">
-        @foreach (var im in Model.Images)
-        {
+<table class="images">
+    <tr>
+        <td>id</td>
+        <td>filename</td>
+        <td>tags</td>
+        <td>image</td>
+    </tr>
+    @foreach (var im in Model.Images)
+    {
+        <tr class="image">
             @Html.Partial("Image", im)
-        }
-    </table>
+            @Html.Partial("ImageControl", im)
+        </tr>
+    }
+</table>

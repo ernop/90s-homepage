@@ -1,0 +1,8 @@
+﻿
+
+@model ActionResultModel
+<h2>Result:</h2>
+
+@Html.Raw(Model.GetResult())
+
+<br /><a href="@Model.NextLink">@Model.NextLinkDescription</a>

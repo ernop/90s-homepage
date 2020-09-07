@@ -19,5 +19,26 @@ namespace FusekiC
         {
             return $"{Name}";
         }
+
+        public string MakeFilename(bool inAdmin)
+        {
+            var res = "";
+            foreach (var c in Name)
+            {
+                if (Helpers.AlphaNumeric.IsMatch(c.ToString()))
+                {
+                    res += c;
+                }
+                if (string.IsNullOrWhiteSpace(c.ToString()))
+                {
+                    res += "-";
+                }
+            }
+            if (!inAdmin)
+            {
+                return res + ".html";
+            }
+            return res;
+        }
     }
 }

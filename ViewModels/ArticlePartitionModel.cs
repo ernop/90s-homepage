@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace FusekiC
 {
+
     public class ArticlePartitionModel
     {
         public ArticlePartitionModel(PartitionData<Article> partitionData)

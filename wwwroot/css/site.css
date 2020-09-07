@@ -92,10 +92,10 @@ div {
 }
 
 .tag a {
-    border: 1px dashed lightgrey;
+    border: 1px dashed darkgrey;
     border-radius: 6px;
     margin: 2px;
-    padding: 5px 7px;
+    padding: 0px 3px;
     display: inline-block;
 }
 
@@ -103,7 +103,7 @@ div {
         color: #800080;
     }
     .tag a:visited:hover{
-        background-color: lightgrey;
+        background-color: darkgrey;
         border: 2px solid grey;
     }
 
@@ -140,6 +140,7 @@ div.navigation {
 
 .relatedarticle {
     width: 100%;
+    border-bottom: 1px dashed darkgrey;
 }
 
 .right {
@@ -182,5 +183,16 @@ h1 {
 
 .articleLinks{
     margin:auto;
-    width:85%;
+    width:99%;
+}
+
+.realarticle{
+    border:3px dashed red;
+    padding:16px;
+    margin:20px;
+    width: 100%;
+}
+
+.image-display{
+    max-width:300px;
 }

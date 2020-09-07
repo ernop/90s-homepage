@@ -32,7 +32,10 @@ namespace FusekiC
                     Console.WriteLine($"Target missing: {target}");
                     throw new Exception($"Missing directory {target}");
                 }
-                Console.WriteLine($"Found dir:{target}");
+                else
+                {
+                    Console.WriteLine($"Found dir:{target}");
+                }
             }
         }
 

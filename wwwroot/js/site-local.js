@@ -43,6 +43,22 @@ if (isViewArticle.length > 0) {
             document.location = "/article/edit/" + title;
         }
     };
+}
 
-    
-};
+var isEditArticle = $(".pageData[kind=editArticle]");
+var ctrlDown = false;
+if (isEditArticle.length > 0) {
+    $(document).keydown(function (e) {
+        if (e.keyCode == 17 ) ctrlDown = true;
+    }).keyup(function (e) {
+        if (e.keyCode == 17 ) ctrlDown = false;
+    });
+
+    $(document).keydown(function (e) {
+        if (ctrlDown) {
+            if (e.which == 38) {
+                console.log("thingie")
+            }
+        }
+    });
+}

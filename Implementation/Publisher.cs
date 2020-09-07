@@ -22,7 +22,7 @@ namespace FusekiC
     public class Publisher
     {
         private Renderer Renderer { get; set; }
-        private static Regex AlphaNumeric = new Regex("^[a-zA-Z0-9]*$");
+        
         private ConsoleLogger Logger { get; set; }
         private ArticleData ArticleData { get; set; }
         private Settings Settings { get; set; }
@@ -55,21 +55,7 @@ namespace FusekiC
             return pubres;
         }
 
-        public static string LinkToArticle(Article article, bool inTagDir, bool inAdmin = false, double distance = 0)
-        {
-            if (inAdmin)
-            {
-                return $"<a class=articlelink href=\"/{article.Title}\">{article.Title} ({distance})</a>";
-            }
-            else
-            {
-                var stem = inTagDir ? "../" : "";
-                var fn = MakeFilename(article.Title, true);
-                return $"<a class=articlelink href=\"{stem}{fn}\">{article.Title} ({distance})</a>";
-            }
-
-
-        }
+        
 
         private static bool SetupDirectories(PublishConfiguration pc)
         {
@@ -97,25 +83,41 @@ namespace FusekiC
             Helpers.DirectoryCopy(pc.ImageSource, imgdest, true);
             return true;
         }
-        
+
+  
+
         private bool PublishArticlesAndTags(PublishConfiguration pc, out int count)
         {
             count = 0;
             using (var db = new FusekiContext())
             {
                 var articleIds = new List<int>();
-                foreach (var article in db.Articles
-                    .Include(el => el.Tags)
-                    .Where(el => el.Published == true))
+                try
                 {
-                    PublishArticle(pc, article);
-                    articleIds.Add(article.Id);
-                    Logger.LogMessage($"Published: {article.Title}");
-                    count++;
+                    foreach (var article in db.Articles
+                        .Include(el => el.Tags)
+                        .Where(el => el.Published == true))
+                    {
+                        var filename = article.MakeFilename(false);
+                        Console.WriteLine($"Writing: {filename}");
+                        var path = MakePath(pc, filename);
+                        //todo add in better title generation code here.
+                        
+                        var combined = Renderer.GenerateArticleString(Settings, article, false);
+                        System.IO.File.WriteAllText(path, combined);
+                        articleIds.Add(article.Id);
+                        Logger.LogMessage($"Published: {article.Title}");
+                        count++;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                
 
                 //todo only publish tags where the article is published.
-                var tags = db.Tags.Where(t => articleIds.Contains(t.ArticleId)).Select(el => el.Name).ToHashSet();
+                var tags = db.Tags.Where(t => articleIds.Contains(t.ArticleId)).ToHashSet();
 
                 var tagDir = pc.TempBase + "/tags";
                 if (!System.IO.Directory.Exists(tagDir))
@@ -125,170 +127,60 @@ namespace FusekiC
 
                 foreach (var tag in tags)
                 {
-                    PublishTag(pc, tag);
+                    PublishTag(pc, tag, false);
                 }
+
+                RecreateHtaccess(pc);
+
             }
 
             return true;
         }
 
-        private string MakeHeader()
+        /// <summary>
+        /// published articles with id<=294 will be have redirects for their titles.
+        /// This doesn't cover the case an article title gets changed - those inbound links are just lost.
+        /// </summary>
+        private void RecreateHtaccess(PublishConfiguration pc)
         {
-            return $"<h1><a href='/'>{Settings.SiteName}</a>";
-        }
+            var baseHtaccess = "RewriteEngine On\n" +
+            "Redirect permanent \"/home/comparison.html\" \"/home/ComparisonoflifeinPiscatawayNewJerseyKochiJapanandZhuzhouChina.html\"";
 
-        private void PublishArticle(PublishConfiguration pc, Article article)
-        {
-            var header = MakeHeader();
-            var title = MakeTitle(article.Title);
-            var body = Renderer.ToHtml(article.Body, false);
-            var footer = MakeFooter(article);
-            var filename = MakeFilename(article.Title);
-            var path = MakePath(pc, filename);
-            var parts = new List<string>() { header, title, body, footer };
-            var combined = WrapInner(parts, false, title: article.Title, mainDivClass:"article");
+            var oldIds = new List<int>() { 1, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 61, 62, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 92, 93, 94, 95, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 124, 125, 126, 127, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 165, 178, 179, 222, 223, 224, 226, 227, 229, 234, 235, 236, 237, 244, 246, 247, 249, 250, 260, 263, 265, 267, 268, 270, 272, 273, 275, 277, 279, 282, 288, 291, 292, 293 };
 
-            System.IO.File.WriteAllText(path, combined);
-        }
-
-        private void PublishTag(PublishConfiguration pc, string tag)
-        {
-            var header = MakeHeader();
-            var title = $"<h1>Tag: {tag}</h1>";
-            var body = MakeTagTable(tag);
-
-            var filename = $"tags/{MakeFilename(tag)}";
-            var path = MakePath(pc, filename);
-            var parts = new List<string>() { header, title, body };
-            var combined = WrapInner(parts, true, $"Tag: {tag}", mainDivClass: "tag");
-            System.IO.File.WriteAllText(path, combined);
-        }
-
-        private string MakeTagTable(string tag)
-        {
-            var sb = new StringBuilder();
-            var header = "<table><thead><tr><th>Article<th>Body<th>Tags<th>Updated</thead><tbody>";
-            sb.Append(header);
+            var lines = new List<string>();
+            
             using (var db = new FusekiContext())
             {
-                var articleIds = db.Tags.Where(t => t.Name == tag).Select(el => el.ArticleId);
-                var articles = db.Articles
-                    .Include(ee => ee.Tags)
-                    .Where(ee => ee.Published)
-                    .Where(el => articleIds.Contains(el.Id))
-                    .OrderBy(el => el.Title);
-                
-                foreach (var article in articles)
+                foreach (var article in db.Articles.Where(el => oldIds.Contains(el.Id) && el.Title != null && el.Title.Length>0))
                 {
-                    var row = MakeArticleRowForList(article, tag);
-                    sb.Append(row);
+                    var oldFilename = article.MakeOldFilename(false);
+                    var newFilename = article.MakeFilename(false);
+                    if (oldFilename != newFilename) { //doh
+                        var str = $"Redirect permanent \"/home/{oldFilename}\" \"/home/{newFilename}\"";
+                        lines.Add(str);
+                    }
                 }
             }
-            var end = "</tbody></table>";
-            sb.Append(end);
-            return sb.ToString();
+
+            baseHtaccess += "\n" + string.Join("\n", lines);
+            var htaccessPath = pc.TempBase + "/.htaccess";
+            System.IO.File.WriteAllText(htaccessPath, baseHtaccess);
+
         }
 
-        private string MakeArticleRowForList(Article article, string highlightTag)
+        private void PublishTag(PublishConfiguration pc, Tag tag, bool inAdmin)
         {
-            var tags = MakeTagList(article, highlightTag, true);
-            var link = LinkToArticle(article, true);
-            return $"<tr><td>{link}<td>{article.Body.Length}<td>{tags}<td class='nb'>{article.Updated.ToString(MvcHelpers.DateFormat)}</tr>";
-        }
+            var filename = $"tags/{tag.MakeFilename(inAdmin)}";
+            var path = MakePath(pc, filename);
 
-        private static string MakeTagList(Article article, string highlightTag, bool inTagDir)
-        {
-            var sb = new StringBuilder();
-
-            foreach (var tag in article.Tags.OrderBy(el => el.Name))
-            {
-                var line = MakeTagLink(tag, highlightTag, inTagDir);
-                sb.Append(line);
-            }
-            return "<div class=taglist>"+sb.ToString()+"</div>";
-        }
-
-        private static string MakeTagLink(Tag tag, string highlightTag, bool inTagDir)
-        {
-            var taglink = $"{MakeFilename(tag.Name)}";
-            var tagFolder = inTagDir ? "" : "tags/";
-            var klass = tag.Name == highlightTag ? "highlight " : "";
-            var line = $"<div class=\"{klass}tag\"><a class=taglink href=\"{tagFolder}{taglink}\">{tag.Name}</a></div>";
-            return line;
-        }
-
-        private string MakeFooter(Article article)
-        {
-            var taglist = MakeTagList(article, "", false);
-            var otherArticleLinks = MakeArticleLinks(article);
-
-            return taglist + "<h2>Related Articles:</h2>" + otherArticleLinks;
-        }
-
-        private string MakeArticleLinks(Article article)
-        {
-            var res = ArticleData.GetRelatedArticles(article);
-            var links = res.Select(el => ConvertRelatedArticleToLink(el)).ToList();
-            return "<div class='articleLinks'>" + string.Join("\n<br />", links) + "</div>";
-        }
-
-        private static string ConvertRelatedArticleToLink(RelatedArticle el)
-        {
-            var articleLink = LinkToArticle(el.Article, false);
-            var tagList = el.Article.Tags.OrderBy(el => el.Name).Select(t => MakeTagLink(t, el.RelatedTags.Select(el=>el.Name).Contains(t.Name) ? t.Name : "", false));
-
-            return $"<div class='relatedarticle'>{articleLink} <div class=\"right\">{string.Join("", tagList)}</div></div>";
+            var tagString = Renderer.GetTagString(Settings, tag, inAdmin);
+            File.WriteAllText(path, tagString);
         }
 
         private static string MakePath(PublishConfiguration pc, string fn)
         {
             return pc.TempBase + "/" + fn;
-        }
-
-        public static string MakeFilename(string name, bool includeSuffix = true)
-        {
-            var res = "";
-            foreach (var c in name)
-            {
-                if (AlphaNumeric.IsMatch(c.ToString()))
-                {
-                    res += c;
-                }
-            }
-            if (includeSuffix)
-            {
-                return res + ".html";
-            }
-            return res;
-
-        }
-
-        private string WrapInner(List<string> parts, bool inTagDir, string title, string mainDivClass)
-        {
-            var stem = inTagDir ? "../" : "";
-            var sb = new StringBuilder();
-            var font = "<link href='https://fonts.googleapis.com/css?family=Vollkorn&display=swap' rel='stylesheet'>";
-            var st = "<meta charset=\"utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />" +
-                $"<title>{title}</title><link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" />" +
-                $"\n{font}" +
-                $"\n<script src='{stem}js/jquery.min.js'></script>\n" +
-                $"\n<script src='{stem}js/jquery.tablesorter.js'></script>\n"+
-                $"\n<script src='{stem}js/site-public.js'></script>\n" +
-            $"<link rel=\"stylesheet\" href=\"{stem}css/site.css?{Settings.Version}\" /><body><div class=\"container {mainDivClass}\">";
-            var ga= $"<script type='text/javascript'>var _gaq = _gaq || [ ];_gaq.push([ '_setAccount', '{Settings.GaId}' ]);_gaq.push([ '_trackPageview' ]);" +
-         "(function() {" +
-           "var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; " +
-           "ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; " +
-          " var s = document.getElementsByTagName('script')[ 0 ]; s.parentNode.insertBefore(ga, s); " +
-         "})();</script>";
-            var end = $"{ga}\n</div></body>";
-            sb.Append(st);
-            foreach (var part in parts)
-            {
-                sb.Append(part);
-            }
-            sb.Append(end);
-            return sb.ToString();
         }
 
         private bool CopyToLive(PublishConfiguration pc, out string result)
@@ -330,9 +222,6 @@ namespace FusekiC
 
             return true;
         }
-        private static string MakeTitle(string title)
-        {
-            return $"<h1>{title}</h1>";
-        }
+ 
     }
 }
